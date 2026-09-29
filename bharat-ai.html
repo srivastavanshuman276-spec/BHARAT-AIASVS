@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Bharat AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#05030d;--card:#0e0a1f;--tx:#f1eaff;--mu:#a99cd0;--a:#d8c4ff;--b:#8b5cf6;--bd:#2a1f4d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=light]{--bg:#f6f2ff;--card:#fff;--tx:#1a1030;--mu:#6b5f8d;--a:#a78bfa;--b:#7c3aed;--bd:#e2d8fb}
+html,body{background:var(--bg)}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+#app{max-width:980px;margin:auto;height:100%;display:flex;flex-direction:column}
+.grad{background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+#splash{position:fixed;inset:0;z-index:9;background:#05030d;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s}
+#splash canvas{position:absolute;inset:0}
+#splash h1{position:relative;font-size:44px;letter-spacing:8px;margin:0;animation:glow 2s infinite alternate}
+@keyframes glow{to{filter:drop-shadow(0 0 22px #a78bfa)}}
+.bar{position:relative;width:180px;height:4px;background:#23264d;border-radius:4px;margin-top:26px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#d8c4ff,#8b5cf6);animation:ld 2.6s forwards}
+@keyframes ld{to{width:100%}}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px}
+header b{font-size:20px;flex:1}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:9px 14px}
+button.p{background:linear-gradient(90deg,var(--a),var(--b));color:#12002b;border:0}
+button:disabled{opacity:.5;cursor:not-allowed}
+main{flex:1;overflow:auto;padding:0 16px 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.tile{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px;text-align:left;transition:.2s}
+.tile:hover{transform:translateY(-3px);box-shadow:0 8px 24px #8b5cf655}.tile span{font-size:26px;display:block}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:16px;margin-bottom:12px}
+input,select,textarea{font:inherit;font-size:16px;width:100%;padding:11px;margin:6px 0 12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
+.msgs{display:flex;flex-direction:column;gap:10px;padding-bottom:8px}
+.m{max-width:85%;padding:10px 14px;border-radius:16px;white-space:pre-wrap;animation:in .3s}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.u{align-self:flex-end;background:linear-gradient(90deg,var(--a),var(--b));color:#12002b}.a{background:var(--card);border:1px solid var(--bd)}
+.dots span{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:var(--b);animation:bn 1s infinite}.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
+@keyframes bn{50%{transform:translateY(-6px)}}
+.row{display:flex;gap:8px}.row input{margin:0}
+.mic{width:120px;height:120px;border-radius:50%;font-size:40px;border:0;background:linear-gradient(135deg,var(--a),var(--b));color:#12002b;display:block;margin:30px auto}
+.mic.on{animation:pu 1.2s infinite}@keyframes pu{0%{box-shadow:0 0 0 0 #8b5cf6aa}100%{box-shadow:0 0 0 40px #8b5cf600}}
+.note{color:var(--mu);font-size:13px}.tag{font-size:12px;background:#8b5cf633;color:var(--a);padding:2px 8px;border-radius:8px}
+.hist{display:flex;justify-content:space-between;align-items:center;gap:8px}
+#splash small{position:relative;margin-top:22px;max-width:320px;text-align:center;color:#a99cd0;font-size:12px;line-height:1.6;animation:fi 2s}
+@keyframes fi{from{opacity:0}}
+#splash h2{position:relative;margin:0 0 6px;font-weight:300;letter-spacing:6px;font-size:16px;color:#d8c4ff}
+.glow{position:relative;border-radius:22px;padding:24px;background:var(--card);margin-top:8vh;box-shadow:0 0 30px #8b5cf655,0 0 80px #8b5cf622;border:1px solid #8b5cf6;animation:gl 3s infinite alternate}
+@keyframes gl{to{box-shadow:0 0 45px #a78bfa99,0 0 120px #8b5cf644}}
+.tabs{display:flex;gap:8px;margin-bottom:16px}.tabs button{flex:1}.tabs .on{background:linear-gradient(90deg,var(--a),var(--b));color:#12002b;border:0;box-shadow:0 0 18px #8b5cf6}
+button.p{box-shadow:0 0 16px #8b5cf688}
+#q{background:#160f33;border:1.5px solid #8b5cf6;box-shadow:0 0 14px #8b5cf655;color:#f1eaff;-webkit-user-select:text;user-select:text;pointer-events:auto}
+#q::placeholder{color:#a99cd0}:root[data-theme=light] #q{background:#fff;color:#1a1030}
+.chatwrap{display:flex;flex-direction:column;height:100%}.chatwrap .msgs{flex:1;overflow:auto}
+.bar2{display:flex;gap:8px;padding:10px 0 4px}.bar2 input{margin:0;flex:1}
+#mb{font-size:20px;padding:6px 12px;box-shadow:0 0 14px #8b5cf655}
+#ov{position:fixed;inset:0;z-index:8;background:#000a;backdrop-filter:blur(3px)}
+#dr{width:270px;max-width:80%;height:100%;background:var(--card);border-right:1px solid #8b5cf6;box-shadow:0 0 40px #8b5cf655;padding:20px 14px;display:flex;flex-direction:column;gap:6px;animation:sl .25s}
+@keyframes sl{from{transform:translateX(-100%)}}
+#dr button{text-align:left;border:0;background:none;padding:12px;font-size:16px}#dr button:hover,#dr button.on{background:#8b5cf633}
+#dr h3{margin:0 0 10px}
+.hello{text-align:center;margin:8vh 0 0}.hello h2{margin:0;line-height:1.4}
+#splash{perspective:900px;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#1d0f45 0%,#08041a 45%,#020108 100%)}
+#splash .stage{position:relative;display:flex;flex-direction:column;align-items:center;transform-style:preserve-3d;transition:transform .15s;will-change:transform}
+#splash .floor{position:absolute;left:-50%;right:-50%;bottom:-8%;height:55%;transform:rotateX(72deg);transform-origin:50% 100%;background-image:linear-gradient(#8b5cf655 1px,transparent 1px),linear-gradient(90deg,#8b5cf655 1px,transparent 1px);background-size:60px 60px;animation:fl 1.6s linear infinite;-webkit-mask-image:linear-gradient(to top,#000,transparent);mask-image:linear-gradient(to top,#000,transparent)}
+@keyframes fl{to{background-position:0 60px}}
+#splash .ring{position:absolute;left:50%;top:50%;border-radius:50%;border:1.5px solid #a78bfa;transform-style:preserve-3d}
+.r1{width:300px;height:300px;margin:-150px;animation:rs1 9s linear infinite;transform:translateZ(-120px)}
+.r2{width:400px;height:400px;margin:-200px;animation:rs2 14s linear infinite;border-style:dashed!important;opacity:.6;transform:translateZ(-260px)}
+.r3{width:220px;height:220px;margin:-110px;animation:rs3 6s linear infinite;transform:translateZ(60px);opacity:.7}
+@keyframes rs1{to{transform:translateZ(-120px) rotateX(70deg) rotateZ(360deg)}}
+@keyframes rs2{from{transform:translateZ(-260px) rotateY(65deg) rotateZ(0)}to{transform:translateZ(-260px) rotateY(65deg) rotateZ(-360deg)}}
+@keyframes rs3{from{transform:translateZ(60px) rotateX(60deg) rotateY(30deg) rotateZ(0)}to{transform:translateZ(60px) rotateX(60deg) rotateY(30deg) rotateZ(360deg)}}
+#splash h1{font-size:clamp(28px,9vw,44px);letter-spacing:clamp(3px,1.6vw,8px);white-space:nowrap;color:#efe6ff;transform:translateZ(90px);text-shadow:0 1px 0 #6d3fe0,0 2px 0 #5b2fc9,0 3px 0 #4a24a8,0 4px 0 #3b1c86,0 0 28px #a78bfa,0 10px 25px #000}
+#splash h2{transform:translateZ(40px)}
+#splash small{transform:translateZ(20px)}
+#splash .rings{position:absolute;inset:0;transform-style:preserve-3d;filter:drop-shadow(0 0 10px #8b5cf6);pointer-events:none}
+body{font-size:var(--fs,16px)}
+#dr .sp{flex:1}#dr .lo{color:#ff8fa3;border-top:1px solid var(--bd)}
+.set label{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:10px 0}.set select,.set input{width:auto;margin:0;max-width:55%}.set input[type=checkbox]{width:20px;height:20px;accent-color:#8b5cf6}.set input[type=range]{width:50%;accent-color:#8b5cf6}
+.set h4{margin:0 0 6px}.danger{color:#ff8fa3;border-color:#ff8fa355}
+</style></head><body>
+<div id="splash"><canvas id="cv"></canvas><div class="floor"></div><div class="rings" id="rg"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div></div><div class="stage" id="stg"><h2>WELCOME TO</h2><h1>BHARAT AI</h1><div class="bar"><i></i></div><small>This is an AI founded by Mr. Anshuman Srivastava,<br>Founder of ASVS Group</small></div></div>
+<div id="app"><header><button id="mb" hidden aria-label="Menu">☰</button><b class="grad" id="ttl">BHARAT AI</b><button id="th">🌓</button></header><div id="ov" hidden><div id="dr"></div></div><main id="v"></main></div>
+<script>
+const $=s=>document.querySelector(s),v=$('#v');
+const st=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},sv=(k,x)=>{try{localStorage.setItem(k,JSON.stringify(x))}catch{}};
+let users=st('users',{}),sess=st('sess',null),prof=sess&&users[sess]?users[sess].prof||null:null,chats=st('chats',[]),cur=null,sample=null;
+// splash: 3D depth starfield
+const cv=$('#cv'),c=cv.getContext('2d');cv.width=innerWidth;cv.height=innerHeight;
+const W=cv.width,H=cv.height,N=140,F=420;let mx=0,my=0,tx=0,ty=0;
+const P=Array.from({length:N},()=>({x:(Math.random()-.5)*W*2,y:(Math.random()-.5)*H*2,z:Math.random()*F+1}));
+addEventListener('pointermove',e=>{tx=(e.clientX/W-.5);ty=(e.clientY/H-.5)});
+addEventListener('deviceorientation',e=>{if(e.gamma!=null){tx=Math.max(-.5,Math.min(.5,e.gamma/60));ty=Math.max(-.5,Math.min(.5,(e.beta-45)/60))}});
+let raf,t0=performance.now();(function d(){mx+=(tx-mx)*.06;my+=(ty-my)*.06;
+ if($('#stg')){const T=`rotateY(${mx*22}deg) rotateX(${-my*18}deg)`;$('#stg').style.transform=T;$('#rg').style.transform=T}
+ c.clearRect(0,0,W,H);const pr=[];
+ P.forEach(p=>{p.z-=1.6;if(p.z<1){p.z=F;p.x=(Math.random()-.5)*W*2;p.y=(Math.random()-.5)*H*2}
+  const k=F/(p.z+F*.35),sx=W/2+(p.x)*k*.5-mx*p.z*.5*-1*.6,sy=H/2+p.y*k*.5+my*p.z*.4;const dp=1-p.z/F;
+  pr.push([sx,sy,dp]);c.globalAlpha=.15+dp*.85;c.shadowBlur=6+dp*18;c.shadowColor='#a78bfa';c.fillStyle=dp>.6?'#efe6ff':'#a78bfa';
+  c.beginPath();c.arc(sx,sy,.6+dp*3.2,0,7);c.fill()});
+ c.shadowBlur=0;for(let i=0;i<N;i++)for(let j=i+1;j<N;j++){const a=pr[i],b=pr[j];if(a[2]<.55||b[2]<.55)continue;const l=Math.hypot(a[0]-b[0],a[1]-b[1]);if(l<110){c.globalAlpha=(1-l/110)*.5*Math.min(a[2],b[2]);c.strokeStyle='#c4a6ff';c.beginPath();c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.stroke()}}
+ c.globalAlpha=1;raf=requestAnimationFrame(d)})();
+setTimeout(()=>{$('#splash').style.opacity=0;setTimeout(()=>{$('#splash').remove();cancelAnimationFrame(raf)},800);home()},2800);
+// settings state
+let cfg=Object.assign({theme:'dark',style:'balanced',lang:'English',speak:true,rate:1,font:16,notify:false},st('cfg',{}));
+const saveCfg=()=>sv('cfg',cfg);
+function applyCfg(){const r=document.documentElement;const t=cfg.theme==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):cfg.theme;r.dataset.theme=t;r.style.setProperty('--fs',cfg.font+'px')}
+applyCfg();
+$('#th').onclick=()=>{cfg.theme=document.documentElement.dataset.theme==='light'?'dark':'light';saveCfg();applyCfg()};
+const esc=s=>String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+function nav(t){v.innerHTML='';$('#ttl').textContent=t;$('#mb').hidden=!(sess&&users[sess]&&prof);$('#ov').hidden=true}
+const items=()=>[['💬','AI Chat',()=>chat()],['🎙️','Voice Chat',voice],['🎨','Image Generator',img],['🕘','Chat History',hist],['💎','Subscription',subs],['👤','Profile',profile],['⚙️','Settings',settings],['🛡️','Admin',admin]];
+$('#mb').onclick=()=>{const cur=$('#ttl').textContent;$('#dr').innerHTML='<h3 class="grad">BHARAT AI</h3>';items().forEach(x=>{const b=document.createElement('button');b.textContent=x[0]+'  '+x[1];if(x[1]===cur)b.className='on';b.onclick=()=>x[2]();$('#dr').append(b)});const sp=document.createElement('div');sp.className='sp';$('#dr').append(sp);const lo=document.createElement('button');lo.className='lo';lo.textContent='🚪  Log out';lo.onclick=logout;$('#dr').append(lo);$('#ov').hidden=false};
+function logout(){sess=null;prof=null;sv('sess',null);$('#ov').hidden=true;home()}
+$('#ov').onclick=e=>{if(e.target.id==='ov')$('#ov').hidden=true};
+function home(){
+ if(!sess||!users[sess])return auth();
+ if(!prof)return onboard();
+ chat();
+}
+async function hash(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function auth(mode='in'){
+ nav('BHARAT AI');
+ v.innerHTML=`<div class="glow"><h2 style="margin-top:0">${mode=='in'?'Welcome back':'Create your account'}</h2>
+ <div class="tabs"><button id="ti" class="${mode=='in'?'on':''}">Sign In</button><button id="tu" class="${mode=='up'?'on':''}">Sign Up</button></div>
+ Email<input id="em" type="email" autocomplete="email">Password<input id="pw" type="password" autocomplete="${mode=='in'?'current-password':'new-password'}">
+ <p class="note" id="er" style="color:#ff8fa3;margin:0 0 8px"></p>
+ <button class="p" id="go" style="width:100%">${mode=='in'?'Sign In':'Sign Up'}</button>
+ <button disabled style="width:100%;margin-top:10px">Continue with Google (needs server)</button>
+ <p class="note">Accounts are stored only on this device until a real server is connected.</p></div>`;
+ $('#ti').onclick=()=>auth('in');$('#tu').onclick=()=>auth('up');
+ $('#go').onclick=async()=>{const e=$('#em').value.trim().toLowerCase(),p=$('#pw').value,er=$('#er');
+  if(!/^\S+@\S+\.\S+$/.test(e))return er.textContent='Enter a valid email.';if(p.length<6)return er.textContent='Password must be at least 6 characters.';
+  const h=await hash(p);
+  if(mode=='up'){if(users[e])return er.textContent='Account already exists. Sign in instead.';users[e]={h}}
+  else if(!users[e]||users[e].h!==h)return er.textContent='Wrong email or password.';
+  sess=e;sv('users',users);sv('sess',sess);prof=users[e].prof||null;home()}}
+function onboard(){
+ nav('Welcome');
+ v.innerHTML=`<div class="card"><h2>Set up your profile</h2><p class="note">Saved on this device only. Real sign-up, login and Google sign-in need a server (see Settings).</p>
+ Full name<input id="n">Age<input id="a" type="number" min="5" max="120">Type<select id="t"><option>Student</option><option>Teacher</option><option>Businessman</option></select>
+ <button class="p" id="go">Continue</button></div>`;
+ $('#go').onclick=()=>{const n=$('#n').value.trim(),a=+$('#a').value;if(!n||!a)return alert('Enter your name and age.');prof={name:n,age:a,type:$('#t').value};users[sess].prof=prof;sv('users',users);home()};
+}
+async function ai(){if(sample)return sample;try{sample=await claude.use('sample')}catch{sample=null}return sample}
+const sys=()=>'You are Bharat AI, a helpful, friendly assistant. The user is a '+(prof?prof.type:'user')+' named '+(prof?prof.name:'')+'. Reply in '+cfg.lang+'. '+({short:'Keep answers very brief.',balanced:'Answer clearly and concisely.',detailed:'Give detailed, thorough answers with examples.',friendly:'Use a warm, casual, friendly tone.'})[cfg.style];
+async function ask(msgs,on){const s=await ai();if(!s)throw{message:'AI is unavailable in this view.'};
+ return (await s([{role:'user',content:sys()+'\n\nConversation follows.'},{role:'assistant',content:'Understood.'},...msgs],{onText:o=>on&&on(o.text),cache:false})).text}
+function chat(id){
+ nav('AI Chat');if(!id)chats=chats.filter(x=>x.m.length);cur=chats.find(x=>x.id===id)||(chats.unshift(cur={id:Date.now(),title:'New chat',m:[]}),cur);
+ v.innerHTML=`<div class="chatwrap"><div class="row" style="justify-content:flex-end;margin-bottom:6px"><button id="nc">+ New Chat</button></div><div class="msgs" id="ms"></div>
+ <div class="bar2"><input id="q" type="text" autocomplete="off" enterkeyhint="send" placeholder="Type your question here…"><button class="p" id="sd">Send</button></div></div>`;setTimeout(()=>{try{$('#q').focus()}catch{}},50);
+ const ms=$('#ms'),draw=()=>{if(!cur.m.length){ms.innerHTML=`<div class="hello"><h2>Hello, ${esc(prof.name)} 👋<br><span class="grad">Welcome to Bharat AI</span></h2><p class="note">Ask me anything below.</p></div>`;return}ms.innerHTML=cur.m.map(m=>`<div class="m ${m.r=='user'?'u':'a'}">${esc(m.content)}</div>`).join('')};draw();
+ $('#nc').onclick=()=>{cur=null;chats=chats.filter(x=>x.m.length);chat()};
+ async function send(){const q=$('#q').value.trim();if(!q)return;$('#q').value='';cur.m.push({r:'user',role:'user',content:q});if(cur.title=='New chat')cur.title=q.slice(0,40);draw();
+  const b=document.createElement('div');b.className='m a';b.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';ms.append(b);
+  try{const t=await ask(cur.m.map(m=>({role:m.role,content:m.content})),x=>b.textContent=x);cur.m.push({r:'a',role:'assistant',content:t})}catch(e){cur.m.pop();b.textContent='⚠️ '+(e.message||'Something went wrong.')}
+  sv('chats',chats);draw();ms.scrollTop=ms.scrollHeight}
+ $('#sd').onclick=send;$('#q').addEventListener('keydown',e=>{if(e.key==='Enter')send()});
+}
+function hist(){nav('Chat History');const l=chats.filter(x=>x.m.length);
+ v.innerHTML=l.length?l.map(x=>`<div class="card hist"><a href="#" data-o="${x.id}" style="color:inherit;flex:1">${esc(x.title)}</a><button data-d="${x.id}">🗑</button></div>`).join(''):'<p class="note">No conversations yet.</p>';
+ v.querySelectorAll('[data-o]').forEach(a=>a.onclick=e=>{e.preventDefault();chat(+a.dataset.o)});
+ v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{chats=chats.filter(x=>x.id!=b.dataset.d);sv('chats',chats);hist()})}
+function voice(){nav('Voice Chat');const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ v.innerHTML=`<button class="mic" id="mk">🎙️</button><p class="note" style="text-align:center" id="vs">${SR?'Tap and speak':'Speech recognition is not supported in this browser (try Chrome).'}</p><div class="msgs" id="vm"></div>`;
+ if(!SR)return;let hist=[];const r=new SR();r.lang=({English:'en-IN',Hindi:'hi-IN',Hinglish:'en-IN',Bengali:'bn-IN',Tamil:'ta-IN',Telugu:'te-IN',Marathi:'mr-IN',Gujarati:'gu-IN'})[cfg.lang]||'en-IN';
+ $('#mk').onclick=()=>{try{r.start()}catch{}};r.onstart=()=>{$('#mk').classList.add('on');$('#vs').textContent='Listening…'};r.onend=()=>$('#mk').classList.remove('on');
+ r.onerror=e=>$('#vs').textContent='Mic error: '+e.error;
+ r.onresult=async e=>{const q=e.results[0][0].transcript;hist.push({role:'user',content:q});$('#vs').textContent='Thinking…';
+  try{const t=await ask(hist);hist.push({role:'assistant',content:t});$('#vs').textContent='Tap and speak';
+   $('#vm').innerHTML=hist.slice(-6).map(m=>`<div class="m ${m.role=='user'?'u':'a'}">${esc(m.content)}</div>`).join('');
+   if(cfg.speak&&window.speechSynthesis){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=cfg.rate;speechSynthesis.speak(u)}}catch(x){$('#vs').textContent='⚠️ '+x.message}}}
+function img(){nav('Image Generator');
+ v.innerHTML=`<div class="card"><h3>AI Image Generator</h3><p class="note">Describe what you want. Bharat AI draws it as a vector (SVG) illustration. It is not a photo-realistic image.</p>
+ <div class="row"><input id="ip" type="text" autocomplete="off" placeholder="e.g. Taj Mahal at sunrise, glowing purple sky"><button class="p" id="ig">Generate</button></div></div>
+ <div id="io"></div>`;
+ setTimeout(()=>{try{$('#ip').focus()}catch{}},50);
+ const clean=t=>{const m=t.match(/<svg[\s\S]*<\/svg>/i);if(!m)return null;return m[0].replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi,'').replace(/\son\w+\s*=\s*("[^"]*"|'[^']*')/gi,'').replace(/(href|xlink:href)\s*=\s*("(?!#)[^"]*"|'(?!#)[^']*')/gi,'')};
+ async function gen(){const q=$('#ip').value.trim();if(!q)return;const o=$('#io');$('#ig').disabled=true;
+  o.innerHTML='<div class="card" style="text-align:center"><span class="dots"><span></span><span></span><span></span></span><p class="note">Bharat AI is drawing…</p></div>';
+  try{const sm=await ai();if(!sm)throw{message:'AI is unavailable in this view.'};
+   const r=await sm('Create a beautiful, detailed SVG illustration for: "'+q+'". Use viewBox="0 0 512 512", gradients and layered shapes, no text unless asked, no external links, no scripts. Reply with ONLY the SVG code.',{cache:false,modelTier:'complex'});
+   const svg=clean(r.text);if(!svg)throw{message:'Could not draw that. Try a simpler prompt.'};
+   const url='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+   o.innerHTML=`<div class="card"><img src="${url}" alt="Generated image" style="width:100%;border-radius:14px;background:#fff"><div class="row" style="margin-top:12px"><button class="p" id="sv">Save SVG</button></div><p class="note" id="sm"></p></div>`;
+   $('#sv').onclick=async()=>{try{const d=await claude.use('downloads');if(!d)return $('#sm').textContent='Saving is not available here. Long-press the image to save.';await d.save({filename:'bharat-ai-'+Date.now()+'.svg',data:svg})}catch(e){$('#sm').textContent=e&&e.code=='declined'?'Save cancelled.':'Could not save.'}}
+  }catch(e){o.innerHTML='<div class="card note">⚠️ '+esc(e.message||'Something went wrong.')+'</div>'}
+  $('#ig').disabled=false}
+ $('#ig').onclick=gen;$('#ip').addEventListener('keydown',e=>{if(e.key==='Enter')gen()})}
+const plans=[['NORMAL',20,['AI Text Chat','Voice Chat','Chat History','No Image Generation']],['PRO',60,['Everything in Normal','Limited AI Image Generation','Premium AI features','Remaining image usage shown']],['PLATINUM',120,['Everything in Pro','Unlimited AI Image Generation','Premium AI experience','Additional premium features']]];
+function subs(){nav('Subscription');v.innerHTML=`<p class="note">Active plan: <b>None</b>. Payments are not connected yet, so plans cannot be bought.</p>`+plans.map(p=>`<div class="card"><h3>${p[0]} <span class="grad">₹${p[1]}</span></h3><ul>${p[2].map(f=>`<li>${f}</li>`).join('')}</ul><button disabled>Upgrade (payment gateway not connected)</button></div>`).join('')}
+function profile(){nav('Profile');v.innerHTML=`<div class="card"><div style="font-size:48px">👤</div><h2>${esc(prof.name)}</h2><p>Age: ${prof.age}<br>Role: ${prof.type}<br>Plan: None</p><button id="ed">Edit profile</button></div>`;$('#ed').onclick=()=>{prof=null;onboard()}}
+function settings(){nav('Settings');
+ const o=(a,c)=>a.map(x=>`<option ${x===c?'selected':''}>${x}</option>`).join('');
+ v.innerHTML=`<div class="card set"><h4>🎨 Appearance</h4>
+ <label>Theme<select id="s_t"><option value="dark">Dark purple</option><option value="light">Light</option><option value="system">Match device</option></select></label>
+ <label>Text size <input id="s_f" type="range" min="14" max="22" value="${cfg.font}"></label></div>
+ <div class="card set"><h4>🤖 AI</h4>
+ <label>Reply language<select id="s_l">${o(['English','Hindi','Hinglish','Bengali','Tamil','Telugu','Marathi','Gujarati'],cfg.lang)}</select></label>
+ <label>Answer style<select id="s_s"><option value="short">Short</option><option value="balanced">Balanced</option><option value="detailed">Detailed</option><option value="friendly">Friendly</option></select></label></div>
+ <div class="card set"><h4>🎙️ Voice</h4>
+ <label>Speak replies aloud<input id="s_v" type="checkbox" ${cfg.speak?'checked':''}></label>
+ <label>Speaking speed <input id="s_r" type="range" min="0.6" max="1.6" step="0.1" value="${cfg.rate}"></label></div>
+ <div class="card set"><h4>🔔 Notifications</h4>
+ <label>Browser notifications<input id="s_n" type="checkbox" ${cfg.notify?'checked':''}></label><p class="note" id="s_nm"></p></div>
+ <div class="card set"><h4>👤 Account</h4><p class="note">Signed in as ${esc(sess)}</p>
+ <input id="op" type="password" placeholder="Current password" style="max-width:100%;width:100%;margin-bottom:8px"><input id="np" type="password" placeholder="New password (6+ characters)" style="max-width:100%;width:100%;margin-bottom:8px">
+ <button id="cp">Change password</button><p class="note" id="cm"></p></div>
+ <div class="card set"><h4>🔒 Privacy & data</h4><p class="note">Your profile and chats are stored only in this browser. Chat messages are sent to Claude to get replies.</p>
+ <div class="row" style="flex-wrap:wrap"><button id="ex">Export my chats</button><button class="danger" id="cc">Delete all chats</button><button class="danger" id="da">Delete account</button></div><p class="note" id="dm"></p></div>
+ <div class="card set"><h4>💬 Help & Support</h4><p class="note"><b>Can't get a reply?</b> Allow the permission prompt for AI and check your connection.<br><b>Voice not working?</b> Use Chrome and allow the microphone.<br><b>Images:</b> made as SVG drawings.</p></div>
+ <div class="card set"><h4>ℹ️ About</h4><p class="note">Bharat AI v1.0 — founded by Mr. Anshuman Srivastava, Founder of ASVS Group.</p></div>
+ <button class="danger" id="lo" style="width:100%">Log out</button>`;
+ $('#s_t').value=cfg.theme;$('#s_s').value=cfg.style;
+ const on=(id,ev,f)=>$(id).addEventListener(ev,f);
+ on('#s_t','change',e=>{cfg.theme=e.target.value;saveCfg();applyCfg()});
+ on('#s_f','input',e=>{cfg.font=+e.target.value;saveCfg();applyCfg()});
+ on('#s_l','change',e=>{cfg.lang=e.target.value;saveCfg()});on('#s_s','change',e=>{cfg.style=e.target.value;saveCfg()});
+ on('#s_v','change',e=>{cfg.speak=e.target.checked;saveCfg()});on('#s_r','input',e=>{cfg.rate=+e.target.value;saveCfg()});
+ on('#s_n','change',async e=>{const m=$('#s_nm');if(!e.target.checked){cfg.notify=false;saveCfg();return}
+  try{const r=await Notification.requestPermission();cfg.notify=r==='granted';e.target.checked=cfg.notify;m.textContent=cfg.notify?'Notifications allowed.':'Permission was not granted.'}catch{e.target.checked=false;m.textContent='Notifications are not supported here.'}saveCfg()});
+ on('#cp','click',async()=>{const m=$('#cm'),n=$('#np').value;if(users[sess].h!==await hash($('#op').value))return m.textContent='Current password is wrong.';if(n.length<6)return m.textContent='New password must be at least 6 characters.';users[sess].h=await hash(n);sv('users',users);m.textContent='Password changed.';$('#op').value=$('#np').value=''});
+ on('#ex','click',async()=>{const m=$('#dm');try{const d=await claude.use('downloads');if(!d)return m.textContent='Saving is not available here.';await d.save({filename:'bharat-ai-chats.json',data:JSON.stringify(chats.filter(x=>x.m.length),null,2)})}catch(e){m.textContent=e&&e.code=='declined'?'Cancelled.':'Could not export.'}});
+ on('#cc','click',()=>{if(confirm('Delete all chats?')){chats=[];sv('chats',chats);$('#dm').textContent='Chats deleted.'}});
+ on('#da','click',()=>{if(confirm('Delete your account and all chats on this device? This cannot be undone.')){delete users[sess];sv('users',users);chats=[];sv('chats',chats);logout()}});
+ on('#lo','click',logout)}
+function admin(){nav('Admin');v.innerHTML=`<div class="card"><h3>Admin Panel <span class="tag">Needs backend</span></h3><p class="note">Managing users, payments, plans and the Pro image limit needs a real database with role-based admin access. This page has no server, so anything shown here would be fake. Suggested tables: users, subscriptions, payments, app_settings (with pro_image_limit).</p></div>`}
+</script></body></html>
